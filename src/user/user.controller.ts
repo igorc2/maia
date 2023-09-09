@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly userService: UserService) {}
+
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+  }
 
   @Get()
   async findAll() {
-    return await this.prisma.user.findMany();
+    return this.userService.findAll();
   }
 }
