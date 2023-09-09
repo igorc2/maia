@@ -8,7 +8,7 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
   private readonly users: User[] = [];
-
+  //return bcrypt.compareSync(password, this.password);
   async create(createUserDto: CreateUserDto): Promise<User> {
     const data: Prisma.UserCreateInput = {
       ...createUserDto,
