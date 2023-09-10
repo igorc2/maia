@@ -10,12 +10,12 @@ export class UserService {
   private readonly users: User[] = [];
   //return bcrypt.compareSync(password, this.password);
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const data: Prisma.UserCreateInput = {
+    const inputUser: Prisma.UserCreateInput = {
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10),
     };
 
-    const createdUser = await this.prisma.user.create({ data });
+    const createdUser = await this.prisma.user.create({ data: inputUser });
 
     return {
       ...createdUser,

@@ -6,24 +6,30 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from '@prisma/client';
+import { AuthUserService } from 'src/auth/auth-user.service';
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private authUserService: AuthUserService,
+  ) {}
 
   @Post()
   create(@Body() project: Project) {
-    console.log('project', project);
-    // return this.projectsService.create(project);
+    const authUser = this.authUserService.getAuthUser();
+    return this.projectsService.create(project, authUser);
   }
 
   @Get()
   findAll() {
-    return this.projectsService.findAll();
+    const authUser = this.authUserService.getAuthUser();
+    return this.projectsService.findAll(authUser);
   }
 
   @Get(':id')
@@ -31,7 +37,7 @@ export class ProjectsController {
     return this.projectsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Post(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectsService.update(+id, updateProjectDto);
   }
