@@ -11,12 +11,14 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<string> {
+  async register(
+    createUserDto: CreateUserDto,
+  ): Promise<{ name: string; token: string }> {
     const user = await this.userService.create(createUserDto);
 
     const accessToken = await this.createAccessToken(user.id);
 
-    return accessToken.token;
+    return { name: user.name, token: accessToken.token };
   }
 
   generateRandomHash() {
@@ -93,7 +95,10 @@ export class AuthService {
     }
   }
 
-  async login(email: string, password: string): Promise<string> {
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ name: string; token: string }> {
     const user = await this.userService.findByEmail(email);
 
     if (user) {
@@ -101,7 +106,7 @@ export class AuthService {
 
       if (isPasswordValid) {
         const accessToken = await this.updateAccessToken(user.id);
-        return accessToken.token;
+        return { name: user.name, token: accessToken.token };
       } else {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }

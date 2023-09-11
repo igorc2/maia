@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Req,
+  Put,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -32,14 +33,10 @@ export class ProjectsController {
     return this.projectsService.findAll(authUser);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
-  }
-
-  @Post(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+    const authUser = this.authUserService.getAuthUser();
+    return this.projectsService.update(+id, updateProjectDto, authUser);
   }
 
   @Delete(':id')
